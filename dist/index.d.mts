@@ -49,6 +49,18 @@ interface MeilisearchProduct {
     listingsCount: number;
     minPrice: number | null;
     isActive: boolean;
+    cardType: string | null;
+    hp: number | null;
+    types: string[] | null;
+    stage: string | null;
+    suffix: string | null;
+    evolvesFrom: string | null;
+    illustrator: string | null;
+    regulationMark: string | null;
+    legalStandard: boolean;
+    legalExpanded: boolean;
+    hasHolo: boolean;
+    hasReverse: boolean;
 }
 
 declare const CONDITION_LABELS: Record<ConditionCode, {

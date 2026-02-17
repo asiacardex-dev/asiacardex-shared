@@ -42,8 +42,19 @@ model Set {
   name        String
   slug        String
   releaseDate DateTime?
-  imageUrl    String?
-  totalCards  Int?
+  imageUrl    String?   // Logo URL
+  symbolUrl   String?   // Set symbol URL
+  totalCards  Int?      // Total unique cards
+  officialCardCount Int? // Official card count
+
+  // Series info
+  serieId     String?
+  serieName   String?
+
+  // Format legality
+  legalStandard  Boolean @default(false)
+  legalExpanded  Boolean @default(true)
+
   isActive    Boolean   @default(true)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
@@ -55,6 +66,7 @@ model Set {
   @@unique([gameId, slug])
   @@index([gameId])
   @@index([releaseDate])
+  @@index([serieId])
 }
 
 model Product {
@@ -73,7 +85,30 @@ model Product {
   imageUrlHiRes  String?
   description    String?
 
-  // Market price (from external source)
+  // Pokemon-specific fields (searchable/filterable)
+  cardType       String?         // Pokemon, Trainer, Energy
+  hp             Int?            // Hit points
+  types          Json?           // ["Grass", "Fire"] - Pokemon types
+  stage          String?         // Basic, Stage1, Stage2, VMAX, VSTAR
+  suffix         String?         // V, VMAX, ex, GX, VSTAR, etc.
+  evolvesFrom    String?         // Pokemon name it evolves from
+  illustrator    String?         // Card artist
+  regulationMark String?         // D, E, F, G... (format identifier)
+
+  // Variants available
+  hasHolo        Boolean @default(false)
+  hasReverse     Boolean @default(false)
+  hasNormal      Boolean @default(false)
+  hasFirstEdition Boolean @default(false)
+
+  // Format legality
+  legalStandard  Boolean @default(false)
+  legalExpanded  Boolean @default(true)
+
+  // Pokedex reference
+  dexIds         Json?           // [251] - National dex numbers
+
+  // Market price (from external source) - NOT stored from sync, fetched on-demand
   marketPrice          Decimal?  @db.Decimal(12, 2)
   marketPriceSource    String?
   marketPriceUpdatedAt DateTime?
@@ -83,7 +118,7 @@ model Product {
   syncStatus   SyncStatus @default(PENDING)
   syncError    String?
 
-  // Metadata (JSON for flexible attributes)
+  // Metadata (JSON for complex attributes: attacks, abilities, weaknesses, etc.)
   attributes Json?
 
   isActive  Boolean  @default(true)
@@ -101,6 +136,13 @@ model Product {
   @@index([name])
   @@index([category])
   @@index([syncStatus])
+  @@index([cardType])
+  @@index([hp])
+  @@index([stage])
+  @@index([suffix])
+  @@index([regulationMark])
+  @@index([illustrator])
+  @@index([legalStandard])
 }
 
 enum ProductCategory {

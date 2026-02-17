@@ -77,9 +77,33 @@ export const API_RATE_LIMITS = {
 // Meilisearch configuration
 export const MEILISEARCH_CONFIG = {
   INDEX_NAME: 'products',
-  SEARCHABLE_ATTRIBUTES: ['name', 'nameEn', 'setName', 'rarity'],
-  FILTERABLE_ATTRIBUTES: ['gameCode', 'setCode', 'rarity', 'category', 'isActive'],
-  SORTABLE_ATTRIBUTES: ['marketPrice', 'listingsCount', 'minPrice', 'name'],
+  SEARCHABLE_ATTRIBUTES: [
+    'name',
+    'nameEn',
+    'setName',
+    'rarity',
+    'illustrator',
+    'evolvesFrom',
+  ],
+  FILTERABLE_ATTRIBUTES: [
+    'gameCode',
+    'setCode',
+    'rarity',
+    'category',
+    'isActive',
+    // Pokemon-specific filters
+    'cardType',
+    'types',
+    'stage',
+    'suffix',
+    'regulationMark',
+    'hp',
+    'legalStandard',
+    'legalExpanded',
+    'hasHolo',
+    'hasReverse',
+  ],
+  SORTABLE_ATTRIBUTES: ['marketPrice', 'listingsCount', 'minPrice', 'name', 'hp'],
   RANKING_RULES: [
     'words',
     'typo',
