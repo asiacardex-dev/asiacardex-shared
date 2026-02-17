@@ -1,11 +1,10 @@
 # Dependencies
 node_modules/
 
-# Build
-dist/
-
-# Prisma
+# Prisma generated (contains platform-specific binaries)
 generated/
+
+# NOTE: dist/ is committed for GitHub installs
 
 # Environment
 .env
