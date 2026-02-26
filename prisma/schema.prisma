@@ -90,9 +90,10 @@ model Product {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  game     Game      @relation(fields: [gameId], references: [id])
-  set      Set?      @relation(fields: [setId], references: [id])
-  listings Listing[]
+  game        Game         @relation(fields: [gameId], references: [id])
+  set         Set?         @relation(fields: [setId], references: [id])
+  listings    Listing[]
+  buyRequests BuyRequest[] @relation("BuyRequests")
 
   @@unique([externalSource, externalId])
   @@unique([gameId, slug])
@@ -143,6 +144,7 @@ model User {
   cart          Cart?
   buyerOrders   Order[]         @relation("BuyerOrders")
   buyerReviews  Review[]        @relation("BuyerReviews")
+  buyRequests   BuyRequest[]    @relation("BuyRequests")
   consents      Consent[]
   auditLogs     AuditLog[]      @relation("ActorLogs")
   notifications Notification[]
@@ -224,6 +226,50 @@ model Address {
   orders Order[]
 
   @@index([userId])
+}
+
+// ============================================
+// LISTINGS
+// ============================================
+
+// ============================================
+// BUY REQUESTS (Demands)
+// ============================================
+
+model BuyRequest {
+  id              String           @id @default(uuid())
+  buyerId         String
+  productId       String
+  maxPrice        Int              // Maximum price in VND
+  quantity        Int              @default(1)
+  conditionCode   String?          // Minimum condition accepted (M, NM, EX, GD, LP, PL, PO)
+  languageCode    String?          // Preferred language (en, ja, ko, zh, vi, th, fr, de)
+  isFoil          Boolean?         // Must be foil?
+  isGraded        Boolean?         // Must be graded?
+  gradingCompany  String?          // PSA, BGS, CGC
+  minGradingScore String?          // Minimum grade score
+  comments        String?          // Additional notes
+  status          BuyRequestStatus @default(ACTIVE)
+  expiresAt       DateTime?
+  publishedAt     DateTime?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  buyer   User    @relation("BuyRequests", fields: [buyerId], references: [id])
+  product Product @relation("BuyRequests", fields: [productId], references: [id])
+
+  @@index([buyerId])
+  @@index([productId])
+  @@index([status])
+  @@index([maxPrice])
+}
+
+enum BuyRequestStatus {
+  DRAFT
+  ACTIVE
+  FULFILLED
+  EXPIRED
+  CANCELLED
 }
 
 // ============================================
